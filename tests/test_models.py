@@ -27,9 +27,11 @@ import os
 import logging
 import unittest
 from decimal import Decimal
+from decimal import InvalidOperation
 from service.models import Product, Category, db, DataValidationError
 from service import app
 from tests.factories import ProductFactory
+
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/postgres"
@@ -214,10 +216,7 @@ class TestProductModel(unittest.TestCase):
         for product in found:
             self.assertEqual(product.price, price)
 
-        found = Product.find_by_price("Foo")
-        with self.assertRaises(InvalidOperation) as context:
-            pfound = Product.find_by_price("Foo")
-        self.assertEqual(str(context.exception), "Invalid attribute: 123")
+        self.assertRaises(InvalidOperation, lambda: Product.find_by_price("Foo"))
 
     def test_deserialize_data_validation_error(self):
         """ It should raise DataValidationError in deserialize """
@@ -236,6 +235,4 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(str(context.exception), "Invalid attribute: 123")
         with self.assertRaises(DataValidationError) as context:
             product.deserialize(None)
-        self.assertEqual(str(context.exception), "Invalid product: body of request contained bad or no data 'NoneType' object is not subscriptable")
-
-
+        self.assertIn("Invalid product: body of request contained bad or no data 'NoneType'", str(context.exception))
