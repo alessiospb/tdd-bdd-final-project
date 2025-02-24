@@ -109,7 +109,7 @@ class TestProductModel(unittest.TestCase):
     # ADD YOUR TEST CASES HERE
     #
     def test_read_a_product(self):
-        """It should Create a product, add it to the database, and then read it"""
+        """It should Read a product"""
         products = Product.all()
         self.assertEqual(products, [])
         product = ProductFactory()
@@ -130,7 +130,7 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(new_product.category, product.category)
 
     def test_update_a_product(self):
-        """It should Create a product, add it to the database, and then update it"""
+        """It should Update a product"""
         product = ProductFactory()
         product.id = None
         product.create()
@@ -152,7 +152,6 @@ class TestProductModel(unittest.TestCase):
         product = ProductFactory()
         product.create()
         self.assertEqual(len(Product.all()), 1)
-        # delete the product and make sure it isn't in the database
         product.delete()
         self.assertEqual(len(Product.all()), 0)
 
@@ -160,17 +159,17 @@ class TestProductModel(unittest.TestCase):
         """It should List all Products in the database"""
         products = Product.all()
         self.assertEqual(products, [])
-        # Create 5 Products
-        for _ in range(5):
+        # Create 10 Products
+        for _ in range(10):
             product = ProductFactory()
             product.create()
-        # See if we get back 5 products
+        # See if we get back 10 products
         products = Product.all()
-        self.assertEqual(len(products), 5)
+        self.assertEqual(len(products), 10)
 
     def test_find_by_name(self):
         """It should Find a Product by Name"""
-        products = ProductFactory.create_batch(5)
+        products = ProductFactory.create_batch(10)
         for product in products:
             product.create()
         name = products[0].name
