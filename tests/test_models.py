@@ -104,3 +104,51 @@ class TestProductModel(unittest.TestCase):
     #
     # ADD YOUR TEST CASES HERE
     #
+    def test_read_a_product(self):
+        """It should Create a product, add it to the database, and then read it"""
+          
+        products = Product.all()
+        self.assertEqual(products, [])
+        product = ProductFactory()
+        product.id = None
+        product.create()
+        # Assert that it was assigned an id and shows up in the database
+        self.assertIsNotNone(product.id)
+        # Read added product from db
+        new_product = Product.find(product.id)
+        # Check that it matches the original product
+        self.assertEqual(new_product.name, product.name)
+        self.assertEqual(new_product.description, product.description)
+        self.assertEqual(Decimal(new_product.price), product.price)
+        self.assertEqual(new_product.available, product.available)
+        self.assertEqual(new_product.category, product.category)
+
+
+    def test_update_a_product(self):
+        """It should Create a product, add it to the database, and then update it"""
+        p = Product()
+        products = p.all()
+        self.assertEqual(products, [])
+        product = ProductFactory()
+        product.id = None
+        product.create()
+        p2 = Product()
+        products = Product.all()
+        self.assertEqual(len(products), 1)
+        # Assert that it was assigned an id and shows up in the database
+        self.assertIsNotNone(product.id)
+        #self.assertEqual(product.id, 0)
+        # Read added product from db
+        new_product = Product.find(product.id)
+        # Update name of this product
+        new_product.name = "Foo1"
+        
+        # Read updated product from db
+        upd_product = Product.find(product.id)
+        # Check that it matches the original product
+        self.assertEqual(upd_product.name, "Foo")
+        self.assertEqual(upd_product.description, product.description)
+        self.assertEqual(Decimal(upd_product.price), product.price)
+        self.assertEqual(upd_product.available, product.available)
+        self.assertEqual(upd_product.category, product.category)
+         
